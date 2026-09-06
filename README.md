@@ -193,7 +193,7 @@ cd Antigravity-gateway
 | `UPSTREAM_TIMEOUT_MS` | 否 | `120000` | 上游请求单次超时时间（毫秒，默认 2 分钟） |
 | `PORT` | 否 | `8080` | 网关本地监听端口 |
 | `HOST` | 否 | `0.0.0.0` | 网关监听网络地址 |
-| `API_KEY` | 否 | - | 下游客户端简易访问 Key；也可通过 `DOWNSTREAM_KEYS_JSON` 配置多个 Key。`/v1/*` 始终要求有效 Bearer Key，未配置任何下游 Key 时不会自动变为免认证模式。 |
+| `API_KEY` | 视情况 | - | 下游客户端简易访问 Key（**推荐配置**）。与 `DOWNSTREAM_KEYS_JSON` 二选一，网关 `/v1/*` 接口强制要求有效 Bearer Key。 |
 | `ENV_FILE` | 否 | - | 自定义指定加载的 `.env` 配置文件路径 |
 | `WRAPPER_MODE` | 否 | `prefer` | 包装模式：`prefer`（推荐，自适应注入合成协议）、`required`（强制要求）、`off`（紧急透明透传回滚） |
 | `RECOVERY_POLICY` | 否 | `repair` | 格式恢复策略：`repair`（本地确定性修复）、`repair_then_retry`（单次安全重试）、`fail`（直接报错） |
@@ -230,7 +230,7 @@ cd Antigravity-gateway
 UPSTREAM_BASE_URL=https://api.openai.com
 UPSTREAM_API_KEY=sk-your-upstream-key-here
 
-# 可选：给下游客户端配置的简易访问 Key 与端口
+# [推荐] 下游客户端连接网关所使用的简易访问 Key (酒馆/客户端填写此 Key)
 API_KEY=sk-antigravity-123456
 PORT=8080
 HOST=0.0.0.0
@@ -584,7 +584,7 @@ The gateway follows 12-Factor App design principles and reads configuration foll
 | `UPSTREAM_TIMEOUT_MS` | No | `120000` | Upstream request timeout in milliseconds (default: 2 minutes) |
 | `PORT` | No | `8080` | Gateway listening port |
 | `HOST` | No | `0.0.0.0` | Gateway listening host interface |
-| `API_KEY` | No | - | Downstream client authentication key; configure this or at least one valid key in `DOWNSTREAM_KEYS_JSON` |
+| `API_KEY` | Conditional | - | Downstream client access key (**Recommended**). Provide either this or keys in `DOWNSTREAM_KEYS_JSON`; `/v1/*` strictly requires a valid Bearer key. |
 | `ENV_FILE` | No | - | Custom path to load `.env` configuration file from |
 | `WRAPPER_MODE` | No | `prefer` | Wrapper mode: `prefer` (recommended, injects synthetic protocol), `required` (strict), `off` (emergency passthrough) |
 | `RECOVERY_POLICY` | No | `repair` | Recovery policy: `repair` (local deterministic fix), `repair_then_retry` (retry on failure), `fail` (error out) |
@@ -621,7 +621,7 @@ The gateway follows 12-Factor App design principles and reads configuration foll
 UPSTREAM_BASE_URL=https://api.openai.com
 UPSTREAM_API_KEY=sk-your-upstream-key-here
 
-# Optional: Downstream client authentication key and port
+# Recommended: Downstream client access key (Input this into SillyTavern / client)
 API_KEY=sk-antigravity-123456
 PORT=8080
 HOST=0.0.0.0
