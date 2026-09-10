@@ -1,0 +1,54 @@
+name: Build main linux-amd64
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout main branch
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+          cache: true
+
+      - name: Show commit
+        run: |
+          echo "HEAD: $(git rev-parse --short HEAD)"
+          echo "MSG : $(git log -1 --format=%s)"
+          go version
+
+      - name: Build
+        env:
+          CGO_ENABLED: '0'
+          GOOS: linux
+          GOARCH: amd64
+        run: |
+          go build -trimpath -ldflags="-s -w" -o gateway ./cmd/gateway
+          chmod +x gateway
+          ls -la gateway
+
+      - name: Package
+        run: |
+          mkdir -p dist
+          cp gateway dist/
+          cp .env.example dist/ 2>/dev/null || true
+          tar czf gateway-linux-amd64-main.tar.gz -C dist .
+          sha256sum gateway-linux-amd64-main.tar.gz > checksums.txt
+          cat checksums.txt
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: gateway-linux-amd64-main
+          path: |
+            gateway-linux-amd64-main.tar.gz
+            checksums.txt
+          retention-days: 7
