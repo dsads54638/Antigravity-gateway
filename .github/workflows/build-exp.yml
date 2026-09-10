@@ -7,9 +7,10 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout experimental branch
+      - name: Checkout upstream experimental branch
         uses: actions/checkout@v4
         with:
+          repository: Xeltra233/Antigravity-gateway
           ref: experimental
           fetch-depth: 0
 
